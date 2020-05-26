@@ -24,6 +24,7 @@
   "devDependencies": {
     "husky": "^4.2.5",
     "prettier": "^2.0.5",
+    "purify-ts": "^0.15.1",
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
     "typescript": "^3.9.3"
@@ -35,5 +36,8 @@
     "hooks": {
       "pre-commit": "tsdx lint"
     }
+  },
+  "dependencies": {
+    "date-fns": "^2.14.0"
   }
 }
