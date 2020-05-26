@@ -1,4 +1,4 @@
-import { extendCodec } from "./utils";
+import { chainCodec, extendCodec } from "./utils";
 import { Codec, Left, number, Right } from "purify-ts/es";
 
 export type NumberRangeOption = {
@@ -34,5 +34,8 @@ export const NumberFromString = Codec.custom<number>({
 
 export const Integer = extendCodec<number>(number, (value) => {
   if (value !== Math.floor(value)) return Left(`${value} is not integer`);
+  if (!Number.isFinite(value)) return Left(`${value} is not finite number`);
   return Right(value);
 });
+
+export const IntegerFromString = chainCodec(NumberFromString, Integer);
