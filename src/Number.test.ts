@@ -4,7 +4,7 @@ import {
   IntegerFromString,
   NumberFromString,
   NumberRangedIn,
-} from "Number.ts";
+} from "./Number";
 
 const left = Left(expect.any(String));
 

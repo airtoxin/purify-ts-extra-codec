@@ -1,9 +1,10 @@
 import "jest";
 import {
+  FormattedStringFromDate,
   NonEmptyString,
   RegExpMatchedString,
   StringLengthRangedIn,
-} from "String.ts";
+} from "./String";
 import { Left, Right } from "purify-ts/es";
 
 describe("NonEmptyString", () => {
@@ -116,6 +117,27 @@ describe("RegExpMatchedString", () => {
   describe("encode", () => {
     it("should return string", () => {
       expect(RegExpMatchedString(/^\w$/).encode("a")).toBe("a");
+    });
+  });
+});
+
+describe("FormattedStringFromDate", () => {
+  describe("decode", () => {
+    it("should return Right with formatted string when value is date", () => {
+      const date = new Date(2020, 0, 1);
+      expect(FormattedStringFromDate("yyyy/MM/dd").decode(date)).toEqual(
+        Right("2020/01/01")
+      );
+    });
+  });
+
+  describe("encode", () => {
+    it("should return Date", () => {
+      const date = new Date(2020, 0, 1);
+      const dateString = "2020/01/01";
+      expect(FormattedStringFromDate("yyyy/MM/dd").encode(dateString)).toEqual(
+        date
+      );
     });
   });
 });

@@ -1,5 +1,7 @@
 import { extendCodec } from "./utils";
-import { Left, Right, string } from "purify-ts/es";
+import { Codec, Left, Right, string } from "purify-ts/es";
+import formatDate from "date-fns/format";
+import parseDate from "date-fns/parse";
 
 export const NonEmptyString = extendCodec<string>(string, (value) => {
   if (value === "") return Left("value must not be empty");
@@ -37,4 +39,15 @@ export const RegExpMatchedString = (regexp: RegExp) =>
     if (!regexp.test(value))
       return Left(`${value} is not matched to ${regexp}`);
     return Right(value);
+  });
+
+export const FormattedStringFromDate = (format: string) =>
+  Codec.custom<string>({
+    decode: (value) => {
+      if (!(value instanceof Date)) {
+        return Left(`${value} is not instance of Date`);
+      }
+      return Right(formatDate(value, format));
+    },
+    encode: (value) => parseDate(value, format, new Date()),
   });
