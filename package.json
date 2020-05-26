@@ -28,7 +28,9 @@
     "tslib": "^2.0.0",
     "typescript": "^3.9.3"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "purify-ts": "^0.15.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
