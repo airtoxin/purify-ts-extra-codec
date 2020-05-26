@@ -65,6 +65,10 @@ describe("NumberFromString", () => {
       expect(NumberFromString.decode("Infinity")).toEqual(left);
       expect(NumberFromString.decode("-Infinity")).toEqual(left);
     });
+
+    it("should return Left when value is not string", () => {
+      expect(NumberFromString.decode(1234)).toEqual(left);
+    });
   });
 
   describe("encode", () => {

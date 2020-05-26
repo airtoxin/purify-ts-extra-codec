@@ -1,5 +1,5 @@
 import { chainCodec, extendCodec } from "./utils";
-import { Codec, Left, number, Right } from "purify-ts/es";
+import { Codec, Left, number, Right, string } from "purify-ts/es";
 
 export type NumberRangeOption = {
   gt?: number;
@@ -22,13 +22,14 @@ export const NumberRangedIn = ({ gt, gte, lt, lte }: NumberRangeOption) =>
   });
 
 export const NumberFromString = Codec.custom<number>({
-  decode: (value) => {
-    const num = Number(value);
-    if (Number.isNaN(num))
-      return Left(`${value} is not number parsable string`);
-    if (!Number.isFinite(num)) return Left(`${value} is not finite number`);
-    return Right(num);
-  },
+  decode: (value) =>
+    string.decode(value).chain((value) => {
+      const num = Number(value);
+      if (Number.isNaN(num))
+        return Left(`${value} is not number parsable string`);
+      if (!Number.isFinite(num)) return Left(`${value} is not finite number`);
+      return Right(num);
+    }),
   encode: (value) => `${value}`,
 });
 
