@@ -22,12 +22,19 @@ export const StringLengthRangedIn = ({
   extendCodec<string>(string, (value) => {
     const length = value.length;
     if (gt != null && !(gt < length))
-      return Left(`string length must be greater than ${gt}`);
+      return Left(`length of ${value} must be greater than ${gt}`);
     if (gte != null && !(gte <= length))
-      return Left(`string length must be greater than equal ${gte}`);
+      return Left(`length of ${value} must be greater than equal ${gte}`);
     if (lt != null && !(lt > length))
-      return Left(`string length must be less than ${lt}`);
+      return Left(`length of ${value} must be less than ${lt}`);
     if (lte != null && !(lte >= length))
-      return Left(`string length must be less than equal ${lte}`);
+      return Left(`length of ${value} must be less than equal ${lte}`);
+    return Right(value);
+  });
+
+export const RegExpMatchedString = (regexp: RegExp) =>
+  extendCodec<string>(string, (value) => {
+    if (!regexp.test(value))
+      return Left(`${value} is not matched to ${regexp}`);
     return Right(value);
   });

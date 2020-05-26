@@ -1,5 +1,9 @@
 import "jest";
-import { NonEmptyString, StringLengthRangedIn } from "./Strings";
+import {
+  NonEmptyString,
+  RegExpMatchedString,
+  StringLengthRangedIn,
+} from "./Strings";
 import { Left, Right } from "purify-ts/es";
 
 describe("NonEmptyString", () => {
@@ -90,6 +94,28 @@ describe("StringLengthRangedIn", () => {
   describe("encode", () => {
     it("should return string", () => {
       expect(StringLengthRangedIn({ lt: 1 }).encode("asdf")).toBe("asdf");
+    });
+  });
+});
+
+describe("RegExpMatchedString", () => {
+  describe("decode", () => {
+    it("should return Right when value is matched to regexp", () => {
+      expect(RegExpMatchedString(/^\d{4}\s\w{2}$/).decode("1234 ab")).toEqual(
+        Right("1234 ab")
+      );
+    });
+
+    it("should return Left when value is not matched to regexp", () => {
+      expect(RegExpMatchedString(/^\w+$/).decode("ab1cd")).toEqual(
+        Left(expect.any(String))
+      );
+    });
+  });
+
+  describe("encode", () => {
+    it("should return string", () => {
+      expect(RegExpMatchedString(/^\w$/).encode("a")).toBe("a");
     });
   });
 });
