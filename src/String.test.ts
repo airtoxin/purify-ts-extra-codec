@@ -7,6 +7,8 @@ import {
 } from "./String";
 import { Left, Right } from "purify-ts/es";
 
+const left = Left(expect.any(String));
+
 describe("NonEmptyString", () => {
   describe("decode", () => {
     it("should return Right when value is not empty", () => {
@@ -14,7 +16,7 @@ describe("NonEmptyString", () => {
     });
 
     it("should return Left when value is empty", () => {
-      expect(NonEmptyString.decode("")).toEqual(Left(expect.any(String)));
+      expect(NonEmptyString.decode("")).toEqual(left);
     });
   });
 
@@ -34,9 +36,7 @@ describe("StringLengthRangedIn", () => {
     });
 
     it("should return Left when value length have not greater than gt", () => {
-      expect(StringLengthRangedIn({ gt: 4 }).decode("asdf")).toEqual(
-        Left(expect.any(String))
-      );
+      expect(StringLengthRangedIn({ gt: 4 }).decode("asdf")).toEqual(left);
     });
 
     it("should return Right when value length have greater than equal to gte", () => {
@@ -46,9 +46,7 @@ describe("StringLengthRangedIn", () => {
     });
 
     it("should return Left when value length have not greater than equal to gte", () => {
-      expect(StringLengthRangedIn({ gte: 5 }).decode("asdf")).toEqual(
-        Left(expect.any(String))
-      );
+      expect(StringLengthRangedIn({ gte: 5 }).decode("asdf")).toEqual(left);
     });
 
     it("should return Right when value length have less than lt", () => {
@@ -58,9 +56,7 @@ describe("StringLengthRangedIn", () => {
     });
 
     it("should return Left when value length have not less than lt", () => {
-      expect(StringLengthRangedIn({ lt: 4 }).decode("asdf")).toEqual(
-        Left(expect.any(String))
-      );
+      expect(StringLengthRangedIn({ lt: 4 }).decode("asdf")).toEqual(left);
     });
 
     it("should return Right when value length have less than equal to lte", () => {
@@ -70,25 +66,23 @@ describe("StringLengthRangedIn", () => {
     });
 
     it("should return Left when value length have not less than equal to lte", () => {
-      expect(StringLengthRangedIn({ lte: 3 }).decode("asdf")).toEqual(
-        Left(expect.any(String))
-      );
+      expect(StringLengthRangedIn({ lte: 3 }).decode("asdf")).toEqual(left);
     });
 
     it("complex pattern gt-lt", () => {
       const codec = StringLengthRangedIn({ gt: 2, lt: 4 });
 
-      expect(codec.decode("as")).toEqual(Left(expect.any(String)));
+      expect(codec.decode("as")).toEqual(left);
       expect(codec.decode("asd")).toEqual(Right("asd"));
-      expect(codec.decode("asdf")).toEqual(Left(expect.any(String)));
+      expect(codec.decode("asdf")).toEqual(left);
     });
 
     it("complex pattern gte-lte", () => {
       const codec = StringLengthRangedIn({ gte: 3, lte: 3 });
 
-      expect(codec.decode("as")).toEqual(Left(expect.any(String)));
+      expect(codec.decode("as")).toEqual(left);
       expect(codec.decode("asd")).toEqual(Right("asd"));
-      expect(codec.decode("asdf")).toEqual(Left(expect.any(String)));
+      expect(codec.decode("asdf")).toEqual(left);
     });
   });
 
@@ -108,9 +102,7 @@ describe("RegExpMatchedString", () => {
     });
 
     it("should return Left when value is not matched to regexp", () => {
-      expect(RegExpMatchedString(/^\w+$/).decode("ab1cd")).toEqual(
-        Left(expect.any(String))
-      );
+      expect(RegExpMatchedString(/^\w+$/).decode("ab1cd")).toEqual(left);
     });
   });
 
@@ -124,17 +116,22 @@ describe("RegExpMatchedString", () => {
 describe("FormattedStringFromDate", () => {
   describe("decode", () => {
     it("should return Right with formatted string when value is date", () => {
-      const date = new Date(2020, 0, 1);
+      const date = new Date(2020, 1, 20);
       expect(FormattedStringFromDate("yyyy/MM/dd").decode(date)).toEqual(
-        Right("2020/01/01")
+        Right("2020/02/20")
       );
+    });
+
+    it("should return Left when value is invalid date", () => {
+      const date = new Date(-1, -1, -1);
+      expect(FormattedStringFromDate("yyyy/MM/dd").decode(date)).toEqual(left);
     });
   });
 
   describe("encode", () => {
     it("should return Date", () => {
-      const date = new Date(2020, 0, 1);
-      const dateString = "2020/01/01";
+      const date = new Date(2020, 1, 20);
+      const dateString = "2020/02/20";
       expect(FormattedStringFromDate("yyyy/MM/dd").encode(dateString)).toEqual(
         date
       );
