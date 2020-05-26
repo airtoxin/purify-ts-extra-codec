@@ -3,7 +3,7 @@ import {
   NonEmptyString,
   RegExpMatchedString,
   StringLengthRangedIn,
-} from "./Strings";
+} from "String.ts";
 import { Left, Right } from "purify-ts/es";
 
 describe("NonEmptyString", () => {

@@ -1,3 +1,3 @@
 export * from "./utils";
-export * from "./Numbers";
-export * from "./Strings";
+export * from "Number.ts";
+export * from "String.ts";
