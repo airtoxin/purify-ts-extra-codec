@@ -1,4 +1,4 @@
-import { Left, Right } from "purify-ts/es";
+import { Left, Right } from "purify-ts";
 import {
   Integer,
   IntegerFromString,

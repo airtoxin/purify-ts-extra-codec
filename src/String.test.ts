@@ -5,7 +5,7 @@ import {
   RegExpMatchedString,
   StringLengthRangedIn,
 } from "./String";
-import { Left, Right } from "purify-ts/es";
+import { Left, Right } from "purify-ts";
 
 const left = Left(expect.any(String));
 

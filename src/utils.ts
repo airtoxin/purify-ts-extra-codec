@@ -1,4 +1,4 @@
-import { Codec, Either } from "purify-ts/es";
+import { Codec, Either } from "purify-ts";
 
 export const extendCodec = <T>(
   base: Codec<T>,
