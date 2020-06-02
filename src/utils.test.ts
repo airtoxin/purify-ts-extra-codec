@@ -32,7 +32,7 @@ describe("extendCodec", () => {
         (_) => Left("nah"),
         (value) => Right(value * value)
       );
-      expect(extended.decode(5)).toEqual(Right(10000));
+      expect(extended.decode(5)).toEqual(left);
     });
   });
 });
