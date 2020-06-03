@@ -2,12 +2,17 @@ import { Codec, Either } from "purify-ts";
 
 export const extendCodec = <T>(
   base: Codec<T>,
-  decoder: (value: T) => Either<string, T>
-): Codec<T> =>
-  Codec.custom<T>({
-    decode: (value) => base.decode(value).chain(decoder),
+  ...decoders: Array<(value: T) => Either<string, T>>
+): Codec<T> => {
+  return Codec.custom<T>({
+    decode: (value) =>
+      (decoders ?? []).reduce(
+        (decoded, decoder) => decoded.chain(decoder),
+        base.decode(value)
+      ),
     encode: base.encode,
   });
+};
 
 export function chainCodec<T1>(c1: Codec<T1>): Codec<T1>;
 export function chainCodec<T1, T2>(c1: Codec<T1>, c2: Codec<T2>): Codec<T2>;
