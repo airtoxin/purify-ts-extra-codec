@@ -1,6 +1,6 @@
 import { Codec, GetInterface, Left, string } from "purify-ts";
 
-export const JsonParsable = <JC extends Codec<any>>(jsonCodec: JC) =>
+export const JsonFromString = <JC extends Codec<any>>(jsonCodec: JC) =>
   Codec.custom<GetInterface<JC>>({
     decode: (value) =>
       string.decode(value).chain((s) => {
