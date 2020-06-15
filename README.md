@@ -118,6 +118,18 @@ DateFromStringFormatOf("yyyy_MM_dd").decode("2020"); // Left("[error message]")
 DateFromStringFormatOf("yyyy_MM_dd").decode(new Date()); // Left("[error message]")
 ```
 
+### Json Codec Module
+
+#### JsonFromString
+
+Convert string into Json value.
+
+```typescript
+JsonFromString(Codec.interface({ type: string })).decode(`{ "type": "hello" }`); // Right({ type: "hello" })
+JsonFromString(Codec.interface({ type: string })).decode(`{}`); // Left("[error message]")
+JsonFromString(Codec.interface({ type: string })).decode(1234); // Left("[error message]")
+```
+
 ### Codec Utility Module
 
 #### extendCodec
