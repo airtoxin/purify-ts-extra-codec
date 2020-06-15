@@ -22,6 +22,7 @@
     "prepare": "tsdx build"
   },
   "devDependencies": {
+    "date-fns": "^2.14.0",
     "eslint-plugin-prettier": "^3.1.3",
     "husky": "^4.2.5",
     "prettier": "^2.0.5",
@@ -31,14 +32,12 @@
     "typescript": "^3.9.3"
   },
   "peerDependencies": {
-    "purify-ts": "^0.15.1"
+    "purify-ts": "^0.15.1",
+    "date-fns": "^2.14.0"
   },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
     }
-  },
-  "dependencies": {
-    "date-fns": "^2.14.0"
   }
 }
