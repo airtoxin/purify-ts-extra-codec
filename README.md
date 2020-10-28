@@ -98,8 +98,6 @@ IntegerFromString.decode(1234); // Left("[error message]")
 
 ### Date Codec Module
 
-Date Codec Module requires [date-fns](https://date-fns.org/) peerDeps.
-
 #### DateFromAny
 
 Convert any date parsable object into Date.
