@@ -102,7 +102,7 @@ describe("RegExpMatchedString", () => {
     });
 
     it("should return Left when value is not matched to regexp", () => {
-      expect(RegExpMatchedString(/^\w+$/).decode("ab1cd")).toEqual(left);
+      expect(RegExpMatchedString(/^\w+$/).decode("ab cd")).toEqual(left);
     });
   });
 
@@ -123,7 +123,7 @@ describe("FormattedStringFromDate", () => {
     });
 
     it("should return Left when value is invalid date", () => {
-      const date = new Date(-1, -1, -1);
+      const date = new Date(1e100);
       expect(FormattedStringFromDate("yyyy/MM/dd").decode(date)).toEqual(left);
     });
   });
