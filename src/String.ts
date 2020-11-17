@@ -2,6 +2,7 @@ import { extendCodec } from "./utils";
 import { Codec, Left, Right, string } from "purify-ts";
 import formatDate from "date-fns/format";
 import parseDate from "date-fns/parse";
+import { isValid } from "date-fns";
 
 export const NonEmptyString = extendCodec<string>(string, (value) => {
   if (value === "") return Left("value must not be empty");
@@ -44,10 +45,10 @@ export const RegExpMatchedString = (regexp: RegExp) =>
 export const FormattedStringFromDate = (format: string) =>
   Codec.custom<string>({
     decode: (value) => {
-      if (!(value instanceof Date)) {
+      if (!isValid(value)) {
         return Left(`${value} is not instance of Date`);
       }
-      return Right(formatDate(value, format));
+      return Right(formatDate(value as Date, format));
     },
     encode: (value) => parseDate(value, format, new Date()),
   });
