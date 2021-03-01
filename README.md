@@ -12,6 +12,26 @@ yarn add purify-ts-extra-codec
 
 ## API
 
+### interface codec alternative
+
+### Interface
+
+Alternative implementation of `Codec.interface`.  
+Original `Codec.interface` returns optional field type to `T | undefined`, so it should give undefined explicitly if declare value with type annotation.
+
+```typescript
+const value: GetType<typeof MyCodec> = { optionalField: undefined }
+```  
+
+`Interface` allows to you to implicit undefined field value.  
+Implementation of `Interface` is internally uses original `Codec.interface`, it only changes returning type.
+
+```typescript
+const ObjCodec = Interface({ str: string, opt: optional(string) });
+ObjCodec.decode({ str: "foo" }) // Right({ str: "foo" });
+const obj: GetInterface<typeof ObjCodec> = { str: "foo" };
+```
+
 ### String Codec Module
 
 #### NonEmptyString
@@ -161,4 +181,23 @@ const ThreeDigitIntegerFromString = chainCodec(
 ThreeDigitNumberFromString.decode("123"); // Right(123)
 ThreeDigitNumberFromString.decode("1.4"); // Left("[error message]")
 ThreeDigitNumberFromString.decode(123); // Left("[error message]")
+```
+
+#### sequenceWeak
+
+`sequenceWeak` accepts up to 9 Either values and combines to one Either tuple.  
+All of Either `Left` type must be same, but `Right` types may not be same.  
+It is useful to wrap up multiple Codec results.  
+Name comes from weak Right type constraint of `Either.sequence`.
+
+```typescript
+import { sequenceWeak } from "./sequenceWeak";
+
+EitherAsync(async ({liftEither}) => {
+  const [str, { id }, int] = await liftEither(sequenceWeak(
+    string.decode(var1),
+    Codec.interface({ id: string }).decode(var2),
+    Integer.decode(var3)
+  ));
+})
 ```
