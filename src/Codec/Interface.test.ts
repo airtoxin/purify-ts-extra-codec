@@ -1,8 +1,9 @@
 import { Interface } from "./Interface";
-import { GetType, optional, Right, string } from "purify-ts";
+import { Codec, GetType, optional, Right, string } from "purify-ts";
 
 describe("Interface", () => {
-  const c = Interface({ str: string, ops: optional(string) });
+  const def = { str: string, ops: optional(string) };
+  const c = Interface(def);
 
   it("should return interface Codec", () => {
     expect(c.decode({ str: "foo" })).toEqual(Right({ str: "foo" }));
@@ -16,5 +17,9 @@ describe("Interface", () => {
     // `GetType<typeof c>` equals to `{ str: string, ops?: string | undefined }`
     const v: GetType<typeof c> = { str: "foo" };
     expect(v).toEqual({ str: "foo" });
+  });
+
+  it("should return same schema to original interface Codec", () => {
+    expect(c.schema()).toEqual(Codec.interface(def).schema());
   });
 });

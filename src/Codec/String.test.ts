@@ -6,7 +6,9 @@ import {
   StringLengthRangedIn,
 } from "./String";
 import { Left, Right } from "purify-ts";
+import Ajv from "ajv";
 
+const ajv = new Ajv();
 const left = Left(expect.any(String));
 
 describe("NonEmptyString", () => {
@@ -23,6 +25,20 @@ describe("NonEmptyString", () => {
   describe("encode", () => {
     it("should return string", () => {
       expect(NonEmptyString.encode("asdf")).toBe("asdf");
+    });
+  });
+
+  describe("schema", () => {
+    it("test", () => {
+      const schema = NonEmptyString.schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        pattern: ".+",
+      });
+      expect(validate("asdf")).toBeTruthy();
+      expect(validate("")).toBeFalsy();
+      expect(validate(10)).toBeFalsy();
     });
   });
 });
@@ -91,24 +107,97 @@ describe("StringLengthRangedIn", () => {
       expect(StringLengthRangedIn({ lt: 1 }).encode("asdf")).toBe("asdf");
     });
   });
+
+  describe("schema", () => {
+    it("gt test", () => {
+      const schema = StringLengthRangedIn({ gt: 3 }).schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        minLength: 4,
+      });
+      expect(validate("asd")).toBeFalsy();
+      expect(validate("asdf")).toBeTruthy();
+    });
+
+    it("gte test", () => {
+      const schema = StringLengthRangedIn({ gte: 3 }).schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        minLength: 3,
+      });
+      expect(validate("as")).toBeFalsy();
+      expect(validate("asd")).toBeTruthy();
+    });
+
+    it("lt test", () => {
+      const schema = StringLengthRangedIn({ lt: 3 }).schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        maxLength: 2,
+      });
+      expect(validate("as")).toBeTruthy();
+      expect(validate("asd")).toBeFalsy();
+    });
+
+    it("lte test", () => {
+      const schema = StringLengthRangedIn({ lte: 3 }).schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        maxLength: 3,
+      });
+      expect(validate("asd")).toBeTruthy();
+      expect(validate("asdf")).toBeFalsy();
+    });
+
+    it("complex pattern", () => {
+      const schema = StringLengthRangedIn({ gt: 2, lte: 4 }).schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        minLength: 3,
+        maxLength: 4,
+      });
+      expect(validate("as")).toBeFalsy();
+      expect(validate("asd")).toBeTruthy();
+      expect(validate("asdf")).toBeTruthy();
+      expect(validate("asdfg")).toBeFalsy();
+    });
+  });
 });
 
 describe("RegExpMatchedString", () => {
   describe("decode", () => {
     it("should return Right when value is matched to regexp", () => {
-      expect(RegExpMatchedString(/^\d{4}\s\w{2}$/).decode("1234 ab")).toEqual(
-        Right("1234 ab")
-      );
+      expect(
+        RegExpMatchedString("^\\d{4}\\s\\w{2}$").decode("1234 ab")
+      ).toEqual(Right("1234 ab"));
     });
 
     it("should return Left when value is not matched to regexp", () => {
-      expect(RegExpMatchedString(/^\w+$/).decode("ab cd")).toEqual(left);
+      expect(RegExpMatchedString("^\\w+$").decode("ab cd")).toEqual(left);
     });
   });
 
   describe("encode", () => {
     it("should return string", () => {
-      expect(RegExpMatchedString(/^\w$/).encode("a")).toBe("a");
+      expect(RegExpMatchedString("^\\w$").encode("a")).toBe("a");
+    });
+  });
+
+  describe("schema", () => {
+    it("test", () => {
+      const schema = RegExpMatchedString("^\\d{4}\\s\\w{2}$").schema();
+      const validate = ajv.compile(schema);
+      expect(schema).toEqual({
+        type: "string",
+        pattern: "^\\d{4}\\s\\w{2}$",
+      });
+      expect(validate("1234 ab")).toBeTruthy();
+      expect(validate("1234")).toBeFalsy();
     });
   });
 });

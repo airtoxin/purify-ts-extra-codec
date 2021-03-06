@@ -1,6 +1,6 @@
 # purify-ts-extra-codec
 
-Extra utility codecs for [purify-ts](https://gigobyte.github.io/purify/).
+🛠 Extra utility codecs for [purify-ts](https://gigobyte.github.io/purify/).
 
 ## Install
 
@@ -32,6 +32,8 @@ ObjCodec.decode({ str: "foo" }) // Right({ str: "foo" });
 const obj: GetInterface<typeof ObjCodec> = { str: "foo" };
 ```
 
+❤️ Support `schema`.
+
 ### String Codec Module
 
 #### NonEmptyString
@@ -44,6 +46,8 @@ NonEmptyString.decode(""); // Left("[error message]")
 NonEmptyString.decode(1234); // Left("[error message]")
 ```
 
+❤️ Support `schema`.
+
 #### StringLengthRangedIn
 
 Ensure length of input string is in range.
@@ -54,15 +58,24 @@ StringLengthRangedIn({ gte: 5, lte: 5 }).decode("asdf"); // Left("[error message
 StringLengthRangedIn({ gte: 5, lte: 5 }).decode(1234); // Left("[error message]")
 ```
 
+❤️ Support `schema`.
+
 #### RegExpMatchedString
 
 Ensure input string matched to RegExp.
 
 ```typescript
+RegExpMatchedString("\\w+").decode("asdf"); // Right("asdf")
+RegExpMatchedString("\\w+").decode("1234"); // Left("[error message]")
+RegExpMatchedString("\\w+").decode(1234); // Left("[error message]")
+
+// those are deprecated interface (Non schema support)
 RegExpMatchedString(/\w+/).decode("asdf"); // Right("asdf")
 RegExpMatchedString(/\w+/).decode("1234"); // Left("[error message]")
 RegExpMatchedString(/\w+/).decode(1234); // Left("[error message]")
 ```
+
+❤️ Support `schema`.
 
 #### FormattedStringFromDate
 
@@ -73,6 +86,8 @@ FormattedStringFromDate("yyyy_MM_dd").decode(new Date()); // Right("2020_01_01")
 FormattedStringFromDate("yyyy_MM_dd").decode(new Date("InvalidDate")); // Left("[error message]")
 FormattedStringFromDate("yyyy_MM_dd").decode("asdf"); // Left("[error message]")
 ```
+
+⚠️ No `schema` support.
 
 ### Number Codec Module
 
@@ -86,6 +101,8 @@ NumberRangedIn({ gte: 2, lt: 5 }).decode(0); // Left("[error message]")
 NumberRangedIn({ gt: 2, lte: 5 }).decode("a"); // Left("[error message]")
 ```
 
+❤️ Support `schema`.
+
 #### NumberFromString
 
 Convert string into number (if parsable).
@@ -95,6 +112,8 @@ NumberFromString.decode("-12.34"); // Right(-12.34)
 NumberFromString.decode("Infinity"); // Left("[error message]")
 NumberFromString.decode(1234); // Left("[error message]")
 ```
+
+❤️ Support `schema`.
 
 #### Integer
 
@@ -106,6 +125,8 @@ Integer.decode(12.34); // Left("[error message]")
 Integer.decode("1234"); // Left("[error message]")
 ```
 
+❤️ Support `schema`.
+
 #### IntegerFromString
 
 Convert string into integer number (if possible).
@@ -115,6 +136,8 @@ IntegerFromString.decode("1234"); // Right(1234)
 IntegerFromString.decode("12.34"); // Left("[error message]")
 IntegerFromString.decode(1234); // Left("[error message]")
 ```
+
+❤️ Support `schema`.
 
 ### Date Codec Module
 
@@ -128,6 +151,8 @@ DateFromAny.decode(1577804400000); // Right(Wed Jan 01 2020 00:00:00)
 DateFromAny.decode("today"); // Left("[error message]")
 ```
 
+⚠️ No `schema` support.
+
 #### DateFromStringFormatOf
 
 Convert formatted date string into Date.
@@ -137,6 +162,8 @@ DateFromStringFormatOf("yyyy_MM_dd").decode("2020_01_01"); // Right(Wed Jan 01 2
 DateFromStringFormatOf("yyyy_MM_dd").decode("2020"); // Left("[error message]")
 DateFromStringFormatOf("yyyy_MM_dd").decode(new Date()); // Left("[error message]")
 ```
+
+⚠️ No `schema` support.
 
 ### Json Codec Module
 
@@ -150,7 +177,23 @@ JsonFromString(Codec.interface({ type: string })).decode(`{}`); // Left("[error 
 JsonFromString(Codec.interface({ type: string })).decode(1234); // Left("[error message]")
 ```
 
+⚠️ No `schema` support.
+
 ### Codec Utility Module
+
+#### withSchema
+
+Utility for adding a schema after defined.
+
+```typescript
+withSchema(
+  MyCodec,
+  (myCodecSchema) => ({
+    ...myCodecSchema,
+    pattern: "^[a-fA-F\\d]{8}$"
+  })
+);
+```
 
 #### extendCodec
 

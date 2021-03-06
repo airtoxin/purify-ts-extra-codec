@@ -1,16 +1,27 @@
 import { Codec, Either } from "purify-ts";
+import { JSONSchema6 } from "json-schema";
+
+export const withSchema = <T>(
+  codec: Codec<T>,
+  schemaExtension: (baseSchema: JSONSchema6) => JSONSchema6
+): Codec<T> => {
+  return Codec.custom<T>({
+    ...codec,
+    schema: () => schemaExtension(codec.schema()),
+  });
+};
 
 export const extendCodec = <T>(
   base: Codec<T>,
   ...decoders: Array<(value: T) => Either<string, T>>
 ): Codec<T> => {
   return Codec.custom<T>({
+    ...base,
     decode: (value) =>
       (decoders ?? []).reduce(
         (decoded, decoder) => decoded.chain(decoder),
         base.decode(value)
       ),
-    encode: base.encode,
   });
 };
 
