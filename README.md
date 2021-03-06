@@ -212,7 +212,8 @@ ThreeLengthString.decode(1); // Left("[error message]")
 #### chainCodec
 
 Utility for composing multiple Codecs.
-This function accepts up to 9 Codecs.
+This function accepts up to 9 Codecs.  
+⚠️ `schema` only uses last one codec schema.
 
 ```typescript
 const ThreeDigitIntegerFromString = chainCodec(
