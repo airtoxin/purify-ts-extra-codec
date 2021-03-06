@@ -108,12 +108,14 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
     return Codec.custom<T2>({
       decode: (value) => c1.decode(value).chain(c2.decode),
       encode: (value) => c1.encode(c2.encode(value) as any),
+      schema: c2.schema,
     });
   }
   if (!c4) {
     return Codec.custom<T3>({
       decode: (value) => c1.decode(value).chain(c2.decode).chain(c3.decode),
       encode: (value) => c1.encode(c2.encode(c3.encode(value) as any) as any),
+      schema: c3.schema,
     });
   }
   if (!c5) {
@@ -122,6 +124,7 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         c1.decode(value).chain(c2.decode).chain(c3.decode).chain(c4.decode),
       encode: (value) =>
         c1.encode(c2.encode(c3.encode(c4.encode(value) as any) as any) as any),
+      schema: c4.schema,
     });
   }
   if (!c6) {
@@ -139,6 +142,7 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             c3.encode(c4.encode(c5.encode(value) as any) as any) as any
           ) as any
         ),
+      schema: c5.schema,
     });
   }
   if (!c7) {
@@ -159,6 +163,7 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             ) as any
           ) as any
         ),
+      schema: c6.schema,
     });
   }
   if (!c8) {
@@ -182,6 +187,7 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             ) as any
           ) as any
         ),
+      schema: c7.schema,
     });
   }
   if (!c9) {
@@ -208,6 +214,7 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             ) as any
           ) as any
         ),
+      schema: c8.schema,
     });
   }
 
@@ -237,5 +244,6 @@ export function chainCodec<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
           ) as any
         ) as any
       ),
+    schema: c9.schema,
   });
 }
