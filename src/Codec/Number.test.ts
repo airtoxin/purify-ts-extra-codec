@@ -100,7 +100,7 @@ describe("NumberRangedIn", () => {
       expect(validate(3.1)).toBeFalsy();
     });
 
-    it("multiple", () => {
+    it("complex pattern", () => {
       const schema = NumberRangedIn({ gt: 3, lte: 10 }).schema();
       const validate = ajv.compile(schema);
       expect(NumberRangedIn({ gt: 3, lte: 10 }).schema()).toEqual({
